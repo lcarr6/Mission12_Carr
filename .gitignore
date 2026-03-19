@@ -1,0 +1,10 @@
+.DS_Store
+.mplconfig/
+
+# Node / Vite
+bookstore-client/node_modules/
+bookstore-client/dist/
+
+# .NET
+BookstoreApi/bin/
+BookstoreApi/obj/

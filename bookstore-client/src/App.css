@@ -1,0 +1,39 @@
+.app-shell {
+  min-height: 100vh;
+}
+
+.hero-section {
+  background:
+    linear-gradient(135deg, rgba(11, 60, 93, 0.96), rgba(25, 95, 122, 0.92)),
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.18), transparent 35%);
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.hero-copy {
+  max-width: 52rem;
+}
+
+.bookstore-card {
+  margin-top: -3rem;
+  border-radius: 1.25rem;
+}
+
+.controls-row > div {
+  min-width: 180px;
+}
+
+.page-link {
+  cursor: pointer;
+}
+
+@media (max-width: 767px) {
+  .bookstore-card {
+    margin-top: -2rem;
+  }
+}
