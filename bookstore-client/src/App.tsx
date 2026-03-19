@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 
+// This TypeScript type matches one book object coming back from the API.
 type Book = {
   bookID: number
   title: string
@@ -13,6 +14,7 @@ type Book = {
   price: number
 }
 
+// The API also sends pagination details so the UI knows how many pages exist.
 type Pagination = {
   totalBooks: number
   pageSize: number
@@ -21,29 +23,42 @@ type Pagination = {
   sortOrder: 'asc' | 'desc'
 }
 
+// This represents the full shape of the API response.
 type BookResponse = {
   books: Book[]
   pagination: Pagination
 }
 
+// The React app fetches data from the ASP.NET Core API running on this port.
 const apiBaseUrl = 'http://localhost:5033'
 
 function App() {
+  // books holds the current page of book results.
   const [books, setBooks] = useState<Book[]>([])
+
+  // These three pieces of state control what data the API returns.
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(5)
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
+
+  // These values are returned by the API and help build the pagination UI.
   const [totalPages, setTotalPages] = useState(1)
   const [totalBooks, setTotalBooks] = useState(0)
+
+  // These states let the UI show a loading message or an error message.
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
 
   useEffect(() => {
+    // Every time page number, page size, or sort order changes,
+    // we request a fresh set of books from the backend.
     const fetchBooks = async () => {
       try {
         setIsLoading(true)
         setError('')
 
+        // Query string values are passed to the backend so the API can
+        // do the sorting and pagination before sending data back.
         const response = await fetch(
           `${apiBaseUrl}/books?pageSize=${pageSize}&pageNum=${currentPage}&sortOrder=${sortOrder}`,
         )
@@ -53,7 +68,11 @@ function App() {
         }
 
         const data: BookResponse = await response.json()
+
+        // Save the current page of books.
         setBooks(data.books)
+
+        // Save pagination metadata used to render the page buttons and summary text.
         setTotalPages(data.pagination.totalPages)
         setTotalBooks(data.pagination.totalBooks)
       } catch (err) {
@@ -66,6 +85,7 @@ function App() {
     void fetchBooks()
   }, [currentPage, pageSize, sortOrder])
 
+  // Build page numbers dynamically based on the number of pages returned by the API.
   const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1)
 
   return (
@@ -102,6 +122,8 @@ function App() {
                     className="form-select"
                     value={pageSize}
                     onChange={(event) => {
+                      // When the user changes page size, restart at page 1
+                      // so we do not accidentally stay on an out-of-range page.
                       setPageSize(Number(event.target.value))
                       setCurrentPage(1)
                     }}
@@ -121,6 +143,8 @@ function App() {
                     className="form-select"
                     value={sortOrder}
                     onChange={(event) => {
+                      // Sorting changes the overall order of the results,
+                      // so we jump back to the first page here too.
                       setSortOrder(event.target.value as 'asc' | 'desc')
                       setCurrentPage(1)
                     }}
@@ -133,12 +157,15 @@ function App() {
             </div>
 
             {isLoading ? (
+              // Show a simple loading state while waiting for the API response.
               <div className="alert alert-light border text-center mb-0">Loading books...</div>
             ) : error ? (
+              // If the request fails, show the error instead of the table.
               <div className="alert alert-danger mb-0">{error}</div>
             ) : (
               <>
                 <div className="table-responsive">
+                  {/* Bootstrap table classes give the assignment its required styling. */}
                   <table className="table table-striped table-hover align-middle mb-4">
                     <thead className="table-dark">
                       <tr>
@@ -183,6 +210,8 @@ function App() {
                         >
                           <button
                             className="page-link"
+                            // Clicking a page button updates state,
+                            // which triggers useEffect to fetch that page.
                             onClick={() => setCurrentPage(pageNumber)}
                             type="button"
                           >

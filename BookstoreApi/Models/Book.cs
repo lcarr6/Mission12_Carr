@@ -3,12 +3,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BookstoreApi.Models;
 
+// This class maps directly to the Books table in the SQLite database.
 [Table("Books")]
 public class Book
 {
+    // BookID is the primary key column in the database.
     [Key]
     public int BookID { get; set; }
 
+    // The rest of the properties match the required assignment fields.
     [Required]
     public string Title { get; set; } = string.Empty;
 
@@ -30,6 +33,7 @@ public class Book
     [Required]
     public int PageCount { get; set; }
 
+    // SQLite stores decimal-style values with REAL in this database.
     [Required]
     [Column(TypeName = "REAL")]
     public double Price { get; set; }
