@@ -17,7 +17,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("BookstoreClient", policy =>
     {
         policy
-            .WithOrigins("http://localhost:5173")
+            .WithOrigins("http://localhost:5173", "http://127.0.0.1:5173")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -36,12 +36,13 @@ if (app.Environment.IsDevelopment())
 app.UseCors("BookstoreClient");
 
 // This endpoint powers the React bookstore page.
-// It supports page size changes, page navigation, and title sorting.
+// It supports page size changes, page navigation, title sorting, and category filtering.
 app.MapGet("/books", async (
     BookstoreContext db,
     int pageSize = 5,
     int pageNum = 1,
-    string sortOrder = "asc") =>
+    string sortOrder = "asc",
+    string? category = null) =>
 {
     // Defensive defaults keep the query valid even if bad values are passed in.
     var normalizedPageSize = pageSize < 1 ? 5 : pageSize;
@@ -52,6 +53,13 @@ app.MapGet("/books", async (
 
     // AsNoTracking improves read-only query performance because we are not editing books here.
     var query = db.Books.AsNoTracking();
+
+    // Filter by category if a category is provided
+    if (!string.IsNullOrWhiteSpace(category))
+    {
+        // Case-insensitive comparison for SQLite
+        query = query.Where(b => b.Category.ToLower() == category.ToLower());
+    }
 
     // Sorting happens before pagination so each page is based on the correct overall order.
     query = normalizedSort == "desc"
@@ -77,10 +85,24 @@ app.MapGet("/books", async (
             pageSize = normalizedPageSize,
             currentPage = normalizedPageNum,
             totalPages = (int)Math.Ceiling(totalBooks / (double)normalizedPageSize),
-            sortOrder = normalizedSort
+            sortOrder = normalizedSort,
+            category
         }
     });
 })
 .WithName("GetBooks");
+
+// New endpoint to dynamically fetch all distinct categories
+app.MapGet("/categories", async (BookstoreContext db) =>
+{
+    var categories = await db.Books
+        .Select(b => b.Category)
+        .Distinct()
+        .OrderBy(c => c)
+        .ToListAsync();
+
+    return Results.Ok(categories);
+})
+.WithName("GetCategories");
 
 app.Run();
