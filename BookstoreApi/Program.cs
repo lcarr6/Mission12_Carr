@@ -6,7 +6,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // The SQLite database file lives in the root folder of the assignment,
 // so we build an absolute path from the API project's current location.
-var databasePath = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "..", "books.db"));
+var databasePath = Path.Combine(builder.Environment.ContentRootPath, "books.db");
+if (!File.Exists(databasePath))
+{
+    databasePath = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "..", "books.db"));
+}
 
 // Register the EF Core database context so the API can query the Books table.
 builder.Services.AddDbContext<BookstoreContext>(options =>
