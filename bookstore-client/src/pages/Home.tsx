@@ -4,7 +4,7 @@ import type { Book, BookResponse } from '../types';
 import { CategoryFilter } from '../components/CategoryFilter';
 import { BookList } from '../components/BookList';
 
-const apiBaseUrl = 'http://localhost:5033';
+const apiBaseUrl = 'https://hilton-bookstore-api-13.azurewebsites.net';
 
 export const Home: React.FC = () => {
   // Use React Router's search params to keep track of URL state for deep linking

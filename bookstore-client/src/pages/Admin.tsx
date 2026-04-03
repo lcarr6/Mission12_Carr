@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import type { Book, BookResponse } from '../types';
 
-const apiBaseUrl = 'http://localhost:5033';
+const apiBaseUrl = 'https://hilton-bookstore-api-13.azurewebsites.net';
 
 export const Admin: React.FC = () => {
   const [books, setBooks] = useState<Book[]>([]);
