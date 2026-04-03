@@ -15,6 +15,7 @@ export const Admin: React.FC = () => {
   const [totalPages, setTotalPages] = useState(1);
   const pageSize = 10;
 
+  // Fetches the current paginated list of books from the API.
   const fetchBooks = async () => {
     try {
       setIsLoading(true);
@@ -35,6 +36,8 @@ export const Admin: React.FC = () => {
     void fetchBooks();
   }, [pageParam]);
 
+  // Deletes a specific book by ID after confirming with the user.
+  // Triggers a list refresh upon successful deletion.
   const handleDelete = async (id: number) => {
     if (!window.confirm('Are you sure you want to delete this book?')) return;
     try {
@@ -49,6 +52,8 @@ export const Admin: React.FC = () => {
     }
   };
 
+  // Submits the form data either as a POST (new book) or PUT (update existing book).
+  // Automatically determines HTTP method by checking for the presence of a 'bookID'.
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingBook) return;
