@@ -15,7 +15,10 @@ export const Header: React.FC = () => {
             Hilton&apos;s Bookstore
           </Link>
           
-          <div className="d-none d-md-block">
+          <div className="d-none d-md-flex align-items-center gap-3">
+            <Link to="/adminbooks" className="btn btn-outline-light btn-sm">
+              Admin
+            </Link>
             <CartSummary />
           </div>
         </div>

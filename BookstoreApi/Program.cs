@@ -1,4 +1,5 @@
 using BookstoreApi.Data;
+using BookstoreApi.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -104,5 +105,47 @@ app.MapGet("/categories", async (BookstoreContext db) =>
     return Results.Ok(categories);
 })
 .WithName("GetCategories");
+
+// POST: Add a new book
+app.MapPost("/books", async (BookstoreContext db, Book newBook) =>
+{
+    db.Books.Add(newBook);
+    await db.SaveChangesAsync();
+    return Results.Created($"/books/{newBook.BookID}", newBook);
+})
+.WithName("CreateBook");
+
+// PUT: Update an existing book
+app.MapPut("/books/{id}", async (int id, BookstoreContext db, Book updatedBook) =>
+{
+    var existingBook = await db.Books.FindAsync(id);
+    if (existingBook == null) return Results.NotFound();
+
+    existingBook.Title = updatedBook.Title;
+    existingBook.Author = updatedBook.Author;
+    existingBook.Publisher = updatedBook.Publisher;
+    existingBook.ISBN = updatedBook.ISBN;
+    existingBook.Classification = updatedBook.Classification;
+    existingBook.Category = updatedBook.Category;
+    existingBook.PageCount = updatedBook.PageCount;
+    existingBook.Price = updatedBook.Price;
+
+    await db.SaveChangesAsync();
+    return Results.NoContent();
+})
+.WithName("UpdateBook");
+
+// DELETE: Remove an existing book
+app.MapDelete("/books/{id}", async (int id, BookstoreContext db) =>
+{
+    if (await db.Books.FindAsync(id) is Book book)
+    {
+        db.Books.Remove(book);
+        await db.SaveChangesAsync();
+        return Results.NoContent();
+    }
+    return Results.NotFound();
+})
+.WithName("DeleteBook");
 
 app.Run();

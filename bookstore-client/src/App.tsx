@@ -3,6 +3,7 @@ import { CartProvider } from './context/CartContext';
 import { Header } from './components/Header';
 import { Home } from './pages/Home';
 import { Cart } from './pages/Cart';
+import { Admin } from './pages/Admin';
 import './App.css';
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
               </>
             } />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/adminbooks" element={<Admin />} />
           </Routes>
           
           <footer className="bg-dark text-white text-center py-4 mt-auto">
