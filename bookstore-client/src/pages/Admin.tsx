@@ -86,7 +86,7 @@ export const Admin: React.FC = () => {
     let finalValue: string | number = value;
 
     if (name === 'pageCount' || name === 'price') {
-      finalValue = Number(value);
+      finalValue = value === '' ? ('' as unknown as number) : Number(value);
     }
 
     setEditingBook((prev) => ({
@@ -106,7 +106,7 @@ export const Admin: React.FC = () => {
           onClick={() => {
             setEditingBook({
               title: '', author: '', publisher: '', isbn: '',
-              classification: '', category: '', pageCount: 0, price: 0
+              classification: '', category: '', pageCount: '' as unknown as number, price: '' as unknown as number
             });
             setIsFormOpen(true);
           }}
@@ -151,11 +151,11 @@ export const Admin: React.FC = () => {
                 </div>
                 <div className="col-md-4">
                   <label className="form-label">Page Count</label>
-                  <input required type="number" name="pageCount" className="form-control" value={editingBook.pageCount || 0} onChange={handleChange} />
+                  <input required type="number" name="pageCount" className="form-control" value={editingBook.pageCount ?? ''} onChange={handleChange} />
                 </div>
                 <div className="col-md-4">
                   <label className="form-label">Price</label>
-                  <input required type="number" step="0.01" name="price" className="form-control" value={editingBook.price || 0} onChange={handleChange} />
+                  <input required type="number" step="0.01" name="price" className="form-control" value={editingBook.price ?? ''} onChange={handleChange} />
                 </div>
               </div>
               <div className="mt-4 d-flex gap-2 justify-content-end">
