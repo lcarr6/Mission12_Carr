@@ -11,6 +11,10 @@ if (!File.Exists(databasePath))
 {
     databasePath = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "..", "books.db"));
 }
+if (File.Exists("/home/data/books.db"))
+{
+    databasePath = "/home/data/books.db";
+}
 
 // Register the EF Core database context so the API can query the Books table.
 builder.Services.AddDbContext<BookstoreContext>(options =>
